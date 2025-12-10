@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>
+    // Worker set karna zaroori hai
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusPrint | Fast Student Printing</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #2563eb; /* Academic Blue */
+            --secondary: #1e40af;
+            --accent: #facc15; /* Highlight Yellow */
+            --light: #f3f4f6;
+            --dark: #1f2937;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { line-height: 1.6; color: var(--dark); }
+
+        /* Navigation */
+        nav { display: flex; justify-content: center; align-items: center; gap: 3rem; padding: 1rem 5%; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; }
+        .btn-cta { background: var(--primary); color: white; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; transition: 0.3s; }
+        .btn-cta:hover { background: var(--secondary); }
+
+        /* Hero Section */
+        header { background: linear-gradient(rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.9)), url('https://source.unsplash.com/random/1600x900/?paper,printing'); background-size: cover; color: white; text-align: center; padding: 6rem 1rem; }
+        header h1 { font-size: 3rem; margin-bottom: 1rem; }
+        header p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+
+        /* Services Grid */
+        .section { padding: 4rem 5%; }
+        .section-title { text-align: center; margin-bottom: 3rem; font-size: 2rem; color: var(--secondary); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; border-top: 5px solid var(--primary); }
+        .card h3 { margin-bottom: 1rem; }
+
+        /* Calculator Section */
+        #calculator { background: var(--light); }
+        .calc-box { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1.5rem; text-align: center; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input, select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; }
+        .total-price { font-size: 1.5rem; color: var(--primary); font-weight: bold; text-align: center; margin-top: 1rem; }
+
+        /* Upload Section */
+        .upload-area { border: 2px dashed var(--primary); padding: 3rem; text-align: center; background: #eff6ff; border-radius: 10px; cursor: pointer; margin-top: 1rem; }
+        
+        /* Footer */
+        footer { background: var(--dark); color: white; text-align: center; padding: 2rem; margin-top: auto; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            nav { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">CampusPrint 🖨️</div>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#calculator">Price Check</a>
+            <a href="#contact">Find Us</a>
+    <!--for future use 
+            <a href="#upload" class="btn-cta">Print Now</a> -->
+        </div>
+    </nav>
+
+    <header>
+        <h1>Printing Made Easy for Students</h1>
+        <p>Black & White, Color, Binding, and Thesis Printing.<br>Ready in 15 minutes.<br>You take it from us at next working day.</p>
+        <a href="#calculator" class="btn-cta" style="background: var(--accent); color: var(--dark);">Start Your Order</a>
+    </header>
+
+    <section id="services" class="section">
+        <h2 class="section-title">Our Services</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>📄 Standard A4</h3>
+                <p>High-quality laser printing for assignments and notes. 75gsm paper.</p>
+            </div>
+            <div class="card">
+                <h3>🌈 Color Printing</h3>
+                <p>Vibrant color printing for projects, flyers, and artwork.</p>
+            </div>
+            <div class="card">
+                <h3>📚 Binding</h3>
+                <p>Spiral binding and thermal binding for project reports and thesis.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator" class="section">
+        <h2 class="section-title">Instant Quote & Upload</h2>
+        <div class="calc-box">
+
+                <div class="upload-area" id="drop-zone">
+                <p id="drop-message">📂 Drag & Drop files here or click to upload</p>
+                <small id="file-name">(PDF, DOCX, JPG accepted)</small>
+                <input type="file" id="file-input" style="display: none;">
+            </div>
+
+            <div id="status-message" style="text-align: center; margin-top: 10px; font-weight: bold;"></div>
+
+            <div class="form-group">
+                <label>Total Pages:</label>
+                <input type="number" id="pages" value="0" min="1" readonly >
+            </div>
+            <div class="form-group">
+                <label>Print Type:</label>
+                <select id="type">
+                    <option value="1.5">Black & White (₹1.50/page)</option>
+                    <option value="5">Color (₹5/page)</option>
+                    <option value="20">Glossy Photo (₹20/page)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Add-ons:</label>
+                <select id="binding">
+                    <option value="0">No Binding</option>
+                    <option value="40">Spiral Binding (₹40/booklet)</option>
+                    <option value="150">Hard Cover (₹150)</option>
+                </select>
+            </div>
+
+            <div class="total-price">
+                Estimated Cost: ₹<span id="total">0.00</span>
+            </div>
+<!--
+            <div class="upload-area" id="drop-zone">
+                <p id="drop-message">📂 Drag & Drop files here or click to upload</p>
+                <small id="file-name">(PDF, DOCX, JPG accepted)</small>
+                <input type="file" id="file-input" style="display: none;">
+            </div>
+
+            <div id="status-message" style="text-align: center; margin-top: 10px; font-weight: bold;"></div>
+        -->
+            <button class="btn-cta" onclick="uploadFile()" style="width: 100%; border: none; font-size: 1.1rem; cursor: pointer; margin-top: 10px;">confirm Order</button>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <h3>📍 Find Us</h3>
+        <p>Student Corner, First Floor,<br> Room no. 213</p>
+        <p>WhatsApp: +91 9752212390</p>
+        <p>&copy; 2025 CampusPrint Services</p>
+    </footer>
+
+    <script>
+        const pagesInput = document.getElementById('pages');
+        const typeInput = document.getElementById('type');
+        const bindingInput = document.getElementById('binding');
+        const totalDisplay = document.getElementById('total');
+
+        function calculateTotal() {
+            // Get values directly as rupees
+            let pages = parseInt(pagesInput.value) || 0;
+            let pricePerPage = parseFloat(typeInput.value);
+            let bindingPrice = parseFloat(bindingInput.value) || 0;
+
+            let total = (pages * pricePerPage) + bindingPrice;
+            totalDisplay.innerText = total.toFixed(2);
+        }
+
+        // Attach event listeners
+        pagesInput.addEventListener('input', calculateTotal);
+        typeInput.addEventListener('change', calculateTotal);
+        bindingInput.addEventListener('change', calculateTotal);
+
+        // Expose globally so dragAndDrop.js can call it
+        window.calculateTotal = calculateTotal;
+
+        // Run once on load
+        calculateTotal();
+    </script>
+
+    <script src="dragdrop.js"></script>
+</body>
+</html>
